@@ -2,26 +2,47 @@ import { useEffect, useState } from "react";
 import { useParams, useLocation } from "react-router";
 import styled from "styled-components";
 
+const Title = styled.h1`
+  font-size: 48px;
+  color: ${(props) => props.theme.accentColor};
+`;
+const Loader = styled.span`
+  text-align: center;
+  display: block;
+`;
 const Container = styled.div`
   padding: 0px 20px;
+  max-width: 480px;
+  margin: 0 auto;
 `;
-
 const Header = styled.header`
-  height: 10vh;
+  height: 15vh;
   display: flex;
   justify-content: center;
   align-items: center;
 `;
 
-const Title = styled.h1`
-  font-size: 48px;
-  color: ${(props) => props.theme.accentColor};
+const Overview = styled.div`
+  display: flex;
+  justify-content: space-between;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 10px 20px;
+  border-radius: 10px;
+`;
+const OverviewItem = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  span:first-child {
+    font-size: 10px;
+    font-weight: 400;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
 `;
 
-const Loader = styled.span`
-  text-align: center;
-  font-size: 30px;
-  display: block;
+const Description = styled.p`
+  margin: 20px 0px;
 `;
 
 interface RouterState {
@@ -99,8 +120,8 @@ interface PriceData {
 function Coin() {
   const [loading, setLoading] = useState(true);
   const { coinId } = useParams();
-  const location = useLocation();
-  const name = location.state as RouterState;
+  const { state } = useLocation();
+  const name = state as RouterState;
   const [info, setInfo] = useState<InfoData>();
   const [priceInfo, setPriceInfo] = useState<PriceData>();
   useEffect(() => {
@@ -113,17 +134,50 @@ function Coin() {
       ).json();
       setInfo(infoData);
       setPriceInfo(priceData);
-      console.log(infoData);
-      console.log(priceData);
+      setLoading(false);
     })();
   }, []);
-  console.log(name);
+  // console.log(name);
   return (
     <Container>
       <Header>
-        <Title>{name?.name || "Loading.."}</Title>
+        <Title>
+          {state?.name ? state.name : loading ? "Loading..." : info?.name}
+          {/* 홈페이지로 부터 값을 받아올 경우 or 홈페이지로 부터 들어오지 않았을 경우 */}
+        </Title>
       </Header>
-      {loading ? <Loader>Loading...</Loader> : null}
+      {loading ? (
+        <Loader>Loading...</Loader>
+      ) : (
+        <>
+          <Overview>
+            <OverviewItem>
+              <span>Rank:</span>
+              <span>{info?.rank}</span>{" "}
+              {/* info가 존재하는 경우에만 rank 찾는다. */}
+            </OverviewItem>
+            <OverviewItem>
+              <span>Symbol</span>
+              <span>{info?.symbol}</span>
+            </OverviewItem>
+            <OverviewItem>
+              <span>Open Source:</span>
+              <span>{info?.open_source ? "Yes" : "No"}</span>
+            </OverviewItem>
+          </Overview>
+          <Description>{info?.description}</Description>
+          <Overview>
+            <OverviewItem>
+              <span>Total Suply:</span>
+              <span>{priceInfo?.total_supply}</span>
+            </OverviewItem>
+            <OverviewItem>
+              <span>Max Supply:</span>
+              <span>{priceInfo?.max_supply}</span>
+            </OverviewItem>
+          </Overview>
+        </>
+      )}
     </Container>
   );
 }
