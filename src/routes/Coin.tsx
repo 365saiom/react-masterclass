@@ -224,7 +224,7 @@ function Coin() {
           </Tabs>
           {/* nested routes 첫번째 사용방법 */}
           <Routes>
-            <Route path="chart" element={<Chart />}></Route>
+            <Route path="chart" element={<Chart coinId={coinId!} />}></Route>
             <Route path="price" element={<Price />}></Route>
           </Routes>
           <Outlet />
