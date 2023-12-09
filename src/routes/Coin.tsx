@@ -6,6 +6,7 @@ import Price from "./Price";
 import Chart from "./Chart";
 import { useQuery } from "react-query";
 import { fetchCoinInfo, fetchCoinTickers } from "./api";
+import { Helmet } from "react-helmet";
 
 const Title = styled.h1`
   font-size: 48px;
@@ -181,6 +182,17 @@ function Coin() {
 
   return (
     <Container>
+      <Helmet>
+        <title>
+          {state?.name ? state.name : loading ? "Loading..." : infoData.name}
+        </title>
+        <link
+          rel="icon"
+          type="image/png"
+          href={`https://coinicons-api.vercel.app/api/icon/${state.symbol}`}
+          sizes="16x16"
+        />
+      </Helmet>
       <Header>
         <Title>
           {state?.name ? state.name : loading ? "Loading..." : infoData.name}

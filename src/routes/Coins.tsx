@@ -3,6 +3,7 @@ import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { fetchCoins } from "./api";
+import { Helmet } from "react-helmet";
 
 const Container = styled.div`
   padding: 0px 20px;
@@ -68,6 +69,15 @@ function Coins() {
   console.log(data);
   return (
     <Container>
+      <Helmet>
+        <title>코인</title>
+        <link
+          rel="icon"
+          type="image/png"
+          href="../public/favicon.ico"
+          sizes="16x16"
+        />
+      </Helmet>
       <Header>
         <Title>코인</Title>
       </Header>
@@ -77,7 +87,10 @@ function Coins() {
         <CoinsList>
           {data?.slice(0, 100).map((coin) => (
             <Coin key={coin.id}>
-              <Link to={`/${coin.id}`} state={{ name: coin.name }}>
+              <Link
+                to={`/${coin.id}`}
+                state={{ name: coin.name, symbol: coin.symbol.toLowerCase() }}
+              >
                 <Img
                   src={`https://coinicons-api.vercel.app/api/icon/${coin.symbol.toLowerCase()}`} //api가 소문자로 되어있으므로, 조회가 가능하도록 toLowerCase()를 사용하여 소문자로 변환하였다.
                 />
